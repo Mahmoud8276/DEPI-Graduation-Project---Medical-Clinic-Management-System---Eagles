@@ -1,0 +1,174 @@
+@model IEnumerable<E_Commerce.Services.Model_View.ProductVM>
+
+@{
+    ViewData["Title"] = "All Products";
+    var isLoggedIn = Context.Session.GetString("IsLoggedIn") == "true";
+    var isAdmin = Context.Session.GetString("IsAdmin") == "true";
+    var canAdd = isLoggedIn && !isAdmin;
+}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-1">
+        <ol class="breadcrumb bg-white px-0" style="font-size:1.3rem;">
+            <li class="breadcrumb-item">
+                <a href="/" style="color:#888; text-decoration:none; font-weight:300;">Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" style="color:#111; font-weight:400;">Products</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold" style="font-size:2.2rem;">All Products</h2>
+            @if (Context.Session.GetString("IsAdmin") == "true")
+            {
+                <a href="@Url.Action("Create", "Product")" class="btn btn-danger" style="background:#e94560; border:none;">
+                    <i class="fa fa-plus me-2"></i>Add New Product
+                </a>
+            }
+        </div>
+
+        <div class="row g-4">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-3">
+                    <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
+                        @{
+                            var isNew = (DateTime.UtcNow - product.CreatedAt).TotalHours <= 48;
+                            var hasDiscount = product.Discount.HasValue && product.Discount.Value > 0;
+                        }
+                        @if (hasDiscount)
+                        {
+                            <span class="flash-discount" style="position:absolute;top:12px;left:12px;z-index:2;background:#e94560;color:#fff;">-@product.Discount.Value.ToString("0.##")%</span>
+                        }
+                        else if (isNew)
+                        {
+                            <span class="flash-discount" style="position:absolute;top:12px;left:12px;z-index:2;background:#27ae60;color:#fff;">NEW</span>
+                        }
+                        <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
+                            @if (isAdmin)
+                            {
+                                <a href="@Url.Action("Edit", "Product", new { id = product.Id })" class="icon-btn" title="Edit Product"><i class="fa fa-pen"></i></a>
+                                <form method="post" action="@Url.Action("DeleteConfirmed", "Product")" style="display:inline;" onsubmit="return confirmDeleteProduct(event, '@product.Name');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@product.Id" />
+                                    <button type="submit" class="icon-btn" title="Delete Product"><i class="fa fa-trash"></i></button>
+                                </form>
+                                <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="icon-btn" title="View Details"><i class="fa-regular fa-eye"></i></a>
+                            }
+                            else if (canAdd)
+                            {
+                                <button class="icon-btn wishlist-btn"
+                                        data-product-id="@product.Id"
+                                        data-name="@product.Name"
+                                        data-price="@product.Price"
+                                        data-image-url="@product.PictureUrl">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                                <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="icon-btn" title="View Details"><i class="fa-regular fa-eye"></i></a>
+                            }
+                            else
+                            {
+                                <button class="icon-btn" onclick="showNoAccessMessage()" style="cursor:not-allowed;opacity:0.7;"><i class="fa-regular fa-heart"></i></button>
+                                <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="icon-btn" title="View Details"><i class="fa-regular fa-eye"></i></a>
+                            }
+                        </div>
+                        <div class="product-image-container mb-3">
+                            <img src="@product.PictureUrl" alt="@product.Name" class="img-fluid">
+                            @if (canAdd)
+                            {
+                                <div class="add-to-cart-overlay" onclick="addToCart(@product.Id, '@product.Name', @product.Price, '@product.PictureUrl')">
+                                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="add-to-cart-overlay disabled" style="cursor:not-allowed;opacity:0.7;" onclick="showNoAccessMessage()">
+                                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                                </div>
+                            }
+                        </div>
+                        <div class="fw-bold mb-1">@product.Name</div>
+                        <div class="mb-1">
+                            <span class="text-danger fw-bold">$@product.Price</span>
+                        </div>
+                        <div class="mb-1">
+                            <span class="text-muted ms-1" style="font-size:0.95rem;">(@product.StockQuantity)</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-5">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous" style="border: none; color: #111; padding: 12px 20px; margin: 0 5px; border-radius: 8px; background: #f5f5f5; transition: all 0.3s ease;">
+                            <i class="fa fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link active" href="#" style="border: none; color: #fff; padding: 12px 20px; margin: 0 5px; border-radius: 8px; background: #e94560; transition: all 0.3s ease;">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" style="border: none; color: #111; padding: 12px 20px; margin: 0 5px; border-radius: 8px; background: #f5f5f5; transition: all 0.3s ease;">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" style="border: none; color: #111; padding: 12px 20px; margin: 0 5px; border-radius: 8px; background: #f5f5f5; transition: all 0.3s ease;">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next" style="border: none; color: #111; padding: 12px 20px; margin: 0 5px; border-radius: 8px; background: #f5f5f5; transition: all 0.3s ease;">
+                            <i class="fa fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        a {
+            text-decoration: none;
+        }
+        .page-link:hover {
+            background: #e94560 !important;
+            color: #fff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(233,69,96,0.15);
+        }
+
+        .page-link.active {
+            box-shadow: 0 4px 12px rgba(233,69,96,0.2);
+        }
+
+        .page-link {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .pagination {
+            margin-bottom: 0;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function showNoAccessMessage() {
+            alert("You don't have access to do this. Please log in as a user.");
+        }
+        function confirmDeleteProduct(event, productName) {
+            if (!confirm('Are you sure you want to delete the product "' + productName + '"? This action cannot be undone.')) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

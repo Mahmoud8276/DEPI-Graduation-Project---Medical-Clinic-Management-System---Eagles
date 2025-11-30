@@ -1,0 +1,181 @@
+﻿@model List<E_Commerce.Data.DataOrEntity.Order>
+
+@{
+    ViewData["Title"] = "Admin - Orders Management";
+}
+
+@Html.AntiForgeryToken()
+
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 fw-bold">Orders Management</h1>
+            <a href="@Url.Action("Index", "Admin")" class="btn btn-outline-secondary">
+                <i class="fa fa-arrow-left me-1"></i>Back to Admin
+            </a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <div class="mb-3">
+                    <i class="fa fa-shopping-bag" style="font-size: 4rem; color: #ccc;"></i>
+                </div>
+                <h4 class="text-muted">No orders yet</h4>
+                <p class="text-muted">No orders have been placed yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var order in Model)
+                {
+                    <div class="col-12 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 py-3">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <h6 class="mb-0 fw-bold">Order #@order.Id</h6>
+                                        <small class="text-muted">@order.CreationDate.ToString("MMM dd, yyyy 'at' h:mm tt")</small>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <span class="badge @(order.Status == "Accepted" ? "bg-success" : order.Status == "Declined" ? "bg-danger" : "bg-warning") fs-6">
+                                            @order.Status
+                                        </span>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        @if (order.Status == "Pending")
+                                        {
+                                            <button class="btn btn-success btn-sm me-2" onclick="acceptOrder(@order.Id)">
+                                                <i class="fa fa-check me-1"></i>Accept
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="declineOrder(@order.Id)">
+                                                <i class="fa fa-times me-1"></i>Decline
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted">Action completed</small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3">Customer Information</h6>
+                                        <p><strong>Name:</strong> @order.FirstName @order.LastName</p>
+                                        <p><strong>Email:</strong> @order.User?.Email</p>
+                                        <p><strong>Phone:</strong> @order.Phone</p>
+                                        <p><strong>Address:</strong> @order.StreetAddress, @order.City</p>
+                                        <p><strong>Payment Method:</strong> @order.PaymentMethod</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3">Order Items</h6>
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <div class="d-flex align-items-center mb-2">
+                                                <img src="@item.ImageUrl" alt="@item.ProductName" class="img-fluid rounded me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">@item.ProductName</p>
+                                                    <small class="text-muted">Quantity: @item.Quantity</small>
+                                                </div>
+                                                <div class="fw-bold">$@(item.Price * item.Quantity)</div>
+                                            </div>
+                                        }
+                                        <div class="border-top pt-2 mt-3">
+                                            <div class="d-flex justify-content-between fw-bold">
+                                                <span>Total Amount:</span>
+                                                <span>$@order.TotalAmount</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function acceptOrder(orderId) {
+            if (confirm('Are you sure you want to accept this order?')) {
+                fetch('/Admin/AcceptOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ orderId: orderId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message);
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showToast(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Error processing request');
+                });
+            }
+        }
+
+        function declineOrder(orderId) {
+            if (confirm('Are you sure you want to decline this order?')) {
+                fetch('/Admin/DeclineOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ orderId: orderId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message);
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showToast(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Error processing request');
+                });
+            }
+        }
+
+        function showToast(message) {
+            var toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #e94560;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 9999;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 3000);
+        }
+    </script>
+}

@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Reset Password";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 d-none d-md-block">
+                <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284" class="img-fluid rounded" alt="Login">
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+                <div class="w-100 px-md-5">
+                    <h1 class="display-6 fw-bold mb-4">Password Reset</h1>
+                    <p class="text-secondary mb-4">Provide the email address associated with your account to reset your password.</p>
+                    <form>
+                        <div class="mb-3">
+                            <input type="email" class="form-control custom-input" id="email" placeholder="Email">
+                        </div>
+                        <div class="d-grid gap-2 mt-4 mb-5">
+                            <button class="btn btn-danger py-2" type="submit">Reset Password</button>
+                        </div>
+                    </form>
+                    <!-- <div class="login-reg d-flex justify-content-end gap-1">
+                        <a href="/Login" class="btn border-0 ps-2">Login</a>
+                        <a href="/SignUp" class="btn border-0 ps-2">Register</a>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .custom-input{
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            box-shadow: 0 0 0 .25rem transparent !important;
+            border-radius: 0;
+            border-color: #DEE2E6;
+        }
+        .login-reg a:hover{
+            color: #BB2D3B;
+        }
+    </style>
+} 

@@ -1,0 +1,880 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TechXpress</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TechXpress.styles.css" asp-append-version="true" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .promo-bar {
+            background: #000;
+            color: #fff;
+            font-size: 1rem;
+            padding: 0.3rem 0;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            position: relative;
+        }
+
+            .promo-bar .promo-center {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                white-space: nowrap;
+            }
+
+            .promo-bar a {
+                color: #fff;
+                font-weight: bold;
+                text-decoration: underline;
+            }
+
+        .navbar {
+            background: #fff !important;
+            box-shadow: none;
+            min-height: 65px !important;
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.3rem !important;
+            color: #111 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            margin-left: 5rem;
+        }
+
+        .navbar-nav {
+            margin: 0 auto;
+        }
+
+        .nav-link {
+            color: #111 !important;
+            font-size: 1rem !important;
+            margin: 0 1rem;
+            position: relative;
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+            overflow: hidden;
+        }
+
+            .nav-link::after {
+                content: '';
+                display: block;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 0;
+                height: 2px;
+                background: #111;
+                transition: width 0.3s cubic-bezier(.4,0,.2,1);
+            }
+
+            .nav-link:hover::after,
+            .nav-link.active::after {
+                width: 90%;
+            }
+
+            .nav-link.active, .nav-link:focus {
+                font-weight: 500;
+            }
+
+        .search-bar {
+            background: #f5f5f5;
+            border-radius: 6px;
+            padding: 0.3rem 0.8rem;
+            display: flex;
+            align-items: center;
+            margin-right: 2.2rem;
+            margin-left: 1.5rem;
+            min-width: 220px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+            .search-bar input {
+                border: none;
+                background: transparent;
+                outline: none;
+                width: 180px;
+                font-size: 1rem;
+                padding: 0.2rem 1.5rem 0.2rem 0;
+            }
+
+            .search-bar button {
+                border: none;
+                background: #fff;
+                border-radius: 50%;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 1.2rem;
+                transition: background 0.2s;
+                position: relative;
+                right: 0;
+            }
+
+                .search-bar button:hover {
+                    background: #e0e0e0;
+                }
+
+            .search-bar i.fa-search {
+                color: #888;
+                font-size: 1.1rem;
+            }
+
+        .icon-link {
+            color: #111 !important;
+            font-size: 1.5rem;
+            margin-left: 1.2rem;
+        }
+
+            .icon-link::after {
+                display: none !important;
+            }
+
+            .icon-link i {
+                font-size: 1.3rem !important;
+                vertical-align: middle;
+            }
+
+            .icon-link .fa-heart {
+                transition: color 0.2s, transform 0.2s;
+            }
+
+            .icon-link:hover .fa-heart {
+                color: #e74c3c !important;
+                transform: scale(1.2);
+            }
+
+            .icon-link .fa-cart-shopping {
+                transition: color 0.2s, transform 0.2s;
+            }
+
+            .icon-link:hover .fa-cart-shopping {
+                color: #27ae60 !important;
+                transform: scale(1.2);
+            }
+
+            .icon-link.active-cart .fa-cart-shopping {
+                color: #27ae60 !important;
+                transform: scale(1.2);
+            }
+
+            .icon-link.active-wishlist .fa-heart {
+                color: #e74c3c !important;
+                transform: scale(1.2);
+            }
+
+            .icon-link .fa-user {
+                transition: color 0.2s, transform 0.2s;
+            }
+
+            .icon-link:hover .fa-user {
+                color: #007bff !important;
+                transform: scale(1.2);
+            }
+
+        .navend a {
+            text-decoration: none;
+        }
+
+        .sticky-navbar {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            animation: slideDown 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        @@keyframes slideDown {
+            from {
+                top: -70px;
+            }
+
+            to {
+                top: 0;
+            }
+        }
+
+        body.sticky-padding {
+            padding-top: 70px;
+        }
+
+        .banner-section a.banner-link {
+            border-bottom: 1px solid #fff;
+            padding-bottom: 2px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+            .banner-section a.banner-link:hover {
+                color: #e94560 !important;
+                border-bottom: 1px solid #e94560 !important;
+            }
+
+        .banner-section .slider-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.5s;
+        }
+
+            .slide.active {
+                display: flex;
+                position: relative;
+                opacity: 1;
+                animation: fadeIn 0.5s;
+            }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .slider-dots .dot {
+            height: 10px;
+            width: 10px;
+            background: #ccc;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .slider-dots .dot.active {
+                background: #e94560;
+            }
+
+        @@media (max-width: 991px) {
+            .banner-section img {
+                display: none;
+            }
+
+            .banner-section {
+                min-height: 220px !important;
+            }
+        }
+        /* Sidebar hover effect */
+        .sidebar-categories li {
+            width: 100%;
+        }
+
+            .sidebar-categories li:hover {
+                color: #e94560;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+        .category-section {
+            background: #fff;
+        }
+
+            .category-section h2 {
+                letter-spacing: -1px;
+            }
+
+        .category-cards-row {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .category-card2 {
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fff;
+            width: 160px;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #222;
+            transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+
+            .category-card2:hover {
+                background: #e94560;
+                color: #fff;
+                border-color: #e94560;
+                box-shadow: 0 2px 12px rgba(233,69,96,0.08);
+            }
+
+            .category-card2 i {
+                margin-bottom: 8px;
+                font-size: 2.2rem;
+                transition: transform 0.2s;
+            }
+
+            .category-card2:hover i {
+                transform: scale(1.1);
+            }
+
+        .cat-arrow {
+            color: #222;
+            font-size: 1.2rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+            .cat-arrow:hover {
+                background: #e94560 !important;
+                color: #fff !important;
+            }
+
+        @@media (max-width: 767px) {
+            .category-card2 {
+                width: 120px;
+                height: 110px;
+                font-size: 1rem;
+            }
+        }
+
+        .flash-sales-section {
+            background: #fff;
+        }
+
+        .flash-timer .timer-value {
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .flash-timer .timer-label {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .flash-timer .timer-sep {
+            font-size: 2rem;
+            color: #e94560;
+            font-weight: bold;
+            margin: 0 0.2rem;
+        }
+
+        .flash-cards-row {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+            .flash-cards-row::-webkit-scrollbar {
+                display: none;
+            }
+
+        .flash-card {
+            min-width: 220px;
+            max-width: 240px;
+            border: none;
+            transition: box-shadow 0.2s, transform 0.2s;
+            position: relative;
+        }
+
+            .flash-card:hover {
+                box-shadow: 0 4px 24px rgba(233,69,96,0.10);
+                transform: translateY(-4px) scale(1.03);
+            }
+
+        .flash-discount {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #e94560;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 6px;
+            padding: 2px 10px;
+            z-index: 2;
+        }
+
+        .flash-card-icons {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .icon-btn {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #222;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+
+            .icon-btn:hover {
+                background: #e94560;
+                color: #fff;
+                border: 1px solid #e94560;
+            }
+
+        .btn-dark {
+            background: #111 !important;
+            border: none !important;
+            color: #fff !important;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            vertical-align: middle;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            display: flex;
+            align-items: center;
+            height: 32px;
+        }
+
+            .btn-dark:hover, .btn-dark:focus {
+                background: #e94560 !important;
+                color: #fff !important;
+                box-shadow: 0 2px 8px rgba(233,69,96,0.15);
+                border: none !important;
+            }
+
+        .flash-card .product-image-container {
+            position: relative;
+            height: 140px;
+            background: #f5f5f5;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .flash-card .product-image-container img {
+                max-height: 120px;
+                width: auto;
+                object-fit: contain;
+                background: transparent;
+                mix-blend-mode: multiply;
+            }
+
+        .flash-card .add-to-cart-overlay {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 8px 0;
+            text-align: center;
+            transition: bottom 0.3s ease;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .flash-card:hover .add-to-cart-overlay {
+            bottom: 0;
+        }
+
+        .flash-card .add-to-cart-overlay:hover {
+            background: rgba(233,69,96,0.9);
+        }
+
+        .flash-card .add-to-cart-overlay i {
+            margin-right: 8px;
+        }
+
+        @@media (max-width: 991px) {
+            .flash-cards-row {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+
+            .flash-card {
+                min-width: 200px;
+                max-width: 220px;
+            }
+        }
+
+        body {
+            margin-bottom: 0 !important;
+        }
+
+        .btn-close:focus {
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        .btn-close:hover {
+            opacity: 0.75 !important;
+        }
+
+        .btn-close-white:focus {
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        .btn-close-white:hover {
+            opacity: 0.75 !important;
+        }
+
+        button:focus, .btn:focus, .btn-link:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .dropdown-menu .dropdown-item.lang-option {
+            color: #111 !important;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none !important;
+        }
+
+            .dropdown-menu .dropdown-item.lang-option .flag-icon {
+                font-size: 1.2em;
+                margin-right: 6px;
+            }
+
+        .btn-link {
+            text-decoration: none !important;
+        }
+
+            .btn-link:hover, .btn-link:focus {
+                text-decoration: none !important;
+            }
+    </style>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <div class="promo-bar px-3">
+        <div class="promo-center">
+            Summer Sale For All Phones And Free Express Delivery - OFF 50%! <a href="/Product/Index">ShopNow</a>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-sm btn-dark dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none; color: #fff;">
+                English
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-a" aria-labelledby="languageDropdown">
+                <li><a class="dropdown-item lang-option" href="#"><span class="flag-icon"><img src="https://flagcdn.com/gb.svg" alt="England Flag" width="24" height="18" style="object-fit:cover;vertical-align:middle;"></span> English</a></li>
+                <li><a class="dropdown-item lang-option" href="#"><span class="flag-icon"><img src="https://flagcdn.com/sa.svg" alt="Saudi Arabia Flag" width="24" height="18" style="object-fit:cover;vertical-align:middle;"></span> Arabic</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-light py-1 shadow-sm" style="min-height:48px;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">TechXpress</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")" href="/Contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "About" ? "active" : "")" href="/About">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")" href="/Product">Products</a>
+                    </li>
+                </ul>
+                <div class="navbar-actions d-flex align-items-center me-5 navend" style="gap: 0.7rem;">
+                    <form class="search-bar d-flex align-items-center" method="get" action="/Product/Search">
+                        <input type="text" name="q" placeholder="Search...">
+                        <button type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </form>
+                    @if (Context.Session.GetString("IsLoggedIn") == "true" && Context.Session.GetString("IsAdmin") != "true")
+                    {
+                        <a href="/Wishlist" class="icon-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Wishlist" ? "active-wishlist" : "")"><i class="fa-regular fa-heart"></i></a>
+                        <a href="/Cart" class="icon-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Cart" ? "active-cart" : "")"><i class="fa-solid fa-cart-shopping"></i></a>
+                        <a href="/Profile" class="icon-link"><i class="fa-regular fa-user"></i></a>
+                    }
+                    @if (Context.Session.GetString("IsAdmin") == "true")
+                    {
+                        <a href="/Admin" class="icon-link"><i class="fa fa-cog"></i></a>
+                    }
+                    @if (Context.Session.GetString("IsLoggedIn") == "true")
+                    {
+                        <form method="post" action="/Login/Logout" class="ms-2 mb-0 d-flex align-items-center" style="height: 32px;">
+                            <button type="submit" class="btn btn-dark align-middle d-flex align-items-center" style="height: 32px;">Logout</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a href="/SignUp" class="btn btn-dark ms-2 align-middle d-flex align-items-center" style="height: 32px;">Sign Up</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="cartToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <i class="bi bi-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close" style="outline: none; box-shadow: none;"></button>
+            </div>
+            <div class="toast-body">
+                Product added to cart successfully!
+            </div>
+        </div>
+    </div>
+
+    <footer style="background:#111; color:#fff; padding: 48px 0 0 0; font-family: inherit;">
+        <div class="container">
+            <div class="row gy-4" style="justify-content: space-between;">
+                <!-- Exclusive Subscribe -->
+                <div class="col-12 col-md-2 mb-4">
+                    <h5 class="fw-bold mb-3">Exclusive</h5>
+                    <div class="mb-2 fw-semibold">Subscribe</div>
+                    <div class="mb-2" style="font-size: 1rem;">Get 10% off your first order</div>
+                    <form class="d-flex" style="max-width: 220px;">
+                        <input type="email" class="form-control bg-transparent text-white border border-light rounded-0 rounded-start" placeholder="Enter your email" style="border-right: none;">
+                        <button type="submit" class="btn btn-outline-light rounded-0 rounded-end" style="border-left: none;">
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+                <!-- Support -->
+                <div class="col-12 col-md-2 mb-4">
+                    <h5 class="fw-bold mb-3">Support</h5>
+                    <div style="font-size: 1rem;">
+                        111 Bijoy sarani, Dhaka,<br>
+                        DH 1515, Bangladesh.<br><br>
+                        exclusive@gmail.com<br>
+                        +88015-88888-9999
+                    </div>
+                </div>
+                <!-- Account -->
+                <div class="col-12 col-md-2 mb-4">
+                    <h5 class="fw-bold mb-3">Account</h5>
+                    <ul class="list-unstyled" style="font-size: 1rem;">
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">My Account</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Login / Register</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Cart</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Wishlist</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Shop</a></li>
+                    </ul>
+                </div>
+                <!-- Quick Link -->
+                <div class="col-12 col-md-2 mb-4">
+                    <h5 class="fw-bold mb-3">Quick Link</h5>
+                    <ul class="list-unstyled" style="font-size: 1rem;">
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Terms Of Use</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">FAQ</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <!-- Download App -->
+                <div class="col-12 col-md-3 mb-4">
+                    <h5 class="fw-bold mb-3">Download App</h5>
+                    <div class="mb-2" style="font-size: 1rem;">Save $3 with App New User Only</div>
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://yourapp.com" alt="QR Code" style="width: 80px; height: 80px; background: #fff; border-radius: 8px; margin-right: 12px;">
+                        <div>
+                            <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" style="height: 32px; margin-bottom: 8px;"></a><br>
+                            <a href="#"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="App Store" style="height: 32px;"></a>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white fs-5"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr style="border-color: #222;">
+            <div class="text-center py-3" style="color: #aaa; font-size: 1rem;">
+                <i class="fa fa-copyright"></i> Copyright ThechXpress 2025. All right reserved
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.getElementById('mainNavbar');
+            const promoBar = document.querySelector('.promo-bar');
+            const promoBarHeight = promoBar.offsetHeight;
+
+            function onScroll() {
+                if (window.scrollY >= promoBarHeight) {
+                    navbar.classList.add('sticky-navbar');
+                    document.body.classList.add('sticky-padding');
+                } else {
+                    navbar.classList.remove('sticky-navbar');
+                    document.body.classList.remove('sticky-padding');
+                }
+            }
+
+            window.addEventListener('scroll', onScroll);
+        });
+
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('cartToast');
+            const toastHeader = toast.querySelector('.toast-header');
+            const toastBody = toast.querySelector('.toast-body');
+            toastBody.textContent = message;
+            if (isSuccess) {
+                toastHeader.classList.remove('bg-danger');
+                toastHeader.classList.add('bg-success');
+                toastHeader.querySelector('strong').textContent = 'Success';
+            } else {
+                toastHeader.classList.remove('bg-success');
+                toastHeader.classList.add('bg-danger');
+                toastHeader.querySelector('strong').textContent = 'Error';
+            }
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        }
+
+        function addToCart(id, name, price, imageUrl) {
+            event.preventDefault();
+            event.stopPropagation();
+            var token = $('input[name="__RequestVerificationToken"]').val() || '';
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: 'POST',
+                contentType: 'application/json',
+                headers: { 'RequestVerificationToken': token },
+                data: JSON.stringify({
+                    Id: id,
+                    Name: name,
+                    Price: price,
+                    ImageUrl: imageUrl,
+                    Quantity: 1
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        showToast(response.message, true);
+                    } else {
+                        showToast(response.message || 'Error adding product to cart', false);
+                    }
+                },
+                error: function() {
+                    showToast('Error adding product to cart', false);
+                }
+            });
+        }
+
+        function addToWishlist(id, name, price, imageUrl) {
+            $.ajax({
+                url: '/Wishlist/AddToWishlist',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    Id: id,
+                    Name: name,
+                    Price: price,
+                    ImageUrl: imageUrl,
+                    Quantity: 1
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        showToast(response.message, true);
+                    } else {
+                        showToast(response.message || 'Error adding to wishlist', false);
+                    }
+                },
+                error: function() {
+                    showToast('Error adding to wishlist', false);
+                }
+            });
+        }
+
+        // Wishlist heart functionality
+        $(document).on('click', '.wishlist-btn', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $btn = $(this);
+            var $icon = $btn.find('i');
+            var productId = $btn.data('product-id');
+            // Find product details from the card
+            var $card = $btn.closest('.flash-card, .product-card');
+            var name = $card.find('.fw-bold.mb-1').text().trim();
+            var priceText = $card.find('.text-danger.fw-bold').first().text().replace(/[^\d.]/g, '');
+            var price = parseFloat(priceText);
+            var imageUrl = $card.find('img').attr('src');
+
+            $.ajax({
+                url: '/Wishlist/AddToWishlist',
+                type: 'POST',
+                data: {
+                    Id: productId,
+                    Name: name,
+                    Price: price,
+                    ImageUrl: imageUrl,
+                    Quantity: 1
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $icon.removeClass('fa-regular').addClass('fa-solid').css('color', '#e74c3c');
+                        $btn.addClass('active-wishlist-heart');
+                        // Optionally show a toast
+                        showToast(response.message, true);
+                    } else {
+                        showToast('Error adding to wishlist', false);
+                    }
+                },
+                error: function () {
+                    showToast('Error adding to wishlist', false);
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

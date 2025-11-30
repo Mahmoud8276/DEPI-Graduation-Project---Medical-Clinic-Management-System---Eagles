@@ -1,0 +1,618 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var isLoggedIn = Context.Session.GetString("IsLoggedIn") == "true";
+    var isAdmin = Context.Session.GetString("IsAdmin") == "true";
+    var canAddToCart = isLoggedIn && !isAdmin;
+}
+
+@model IEnumerable<E_Commerce.Services.Model_View.ProductVM>
+
+<!-- First Section: Categories + Banner Slider -->
+<section>
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar Categories -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="bg-white h-100 p-4" style="border-right:1px solid #eee; min-height:340px;">
+                    <ul class="list-unstyled mb-0 sidebar-categories" style="font-size:1.1rem;">
+                        @foreach (var type in ((IEnumerable<dynamic>)ViewBag.Types).Take(8))
+                        {
+                            <li class="mb-3 d-flex justify-content-between align-items-center">
+                                <a href="@Url.Action("ByType", "Product", new { typeId = type.Id })" style="color:inherit;text-decoration:none;width:100%;display:flex;justify-content:space-between;align-items:center;">
+                                    @type.Name <i class="fa fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <!-- Banner/Slider -->
+            <div class="col-md-9">
+                <div class="banner-section position-relative d-flex align-items-center" style="background:#000000; min-height:340px; max-width: 1100px; overflow:hidden;">
+                    <!-- Slider Wrapper -->
+                    <div class="slider-wrapper w-100 h-100 position-relative">
+                        <!-- Slide 1 -->
+                        <div class="slide d-flex align-items-center h-100">
+                            <div class="p-5 text-white" style="z-index:2;">
+                                <div class="mb-2">
+                                    <i class="fab fa-apple fa-lg fs-1"></i>
+                                    <span class="ms-2" style="font-size:2rem;">iPhone 14 Series</span>
+                                </div>
+                                <h2 class="fw-bold" style="font-size:2.7rem;">Up to 10%<br>off Voucher</h2>
+                                <a href="/Product/Index" class="text-white text-decoration-none mt-4 banner-link">
+                                    Shop Now <i class="fa fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                            <img src="~/images/iphoneb.jpg" alt="iPhone" class="banner-img ms-auto d-none d-md-block" style="height:90%; max-width:50%; object-fit:contain; z-index:1;">
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="slide d-flex align-items-center h-100">
+                            <div class="p-5 text-white" style="z-index:2;">
+                                <div class="mb-2">
+                                    <i class="fab fa-windows fa-lg fs-1"></i>
+                                    <span class="ms-2" style="font-size:2rem;">Windows 11</span>
+                                </div>
+                                <h2 class="fw-bold" style="font-size:2.7rem;">New Laptops<br>Collection</h2>
+                                <a href="/Product/Index" class="text-white text-decoration-none mt-4 banner-link">
+                                    Shop Now <i class="fa fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                            <img src="~/images/JBL_BOOMBOX_2_HERO_020_x1 (1) 1.png" alt="Laptop" class="banner-img ms-auto d-none d-md-block" style="height:90%; max-width:50%; object-fit:contain; z-index:1;">
+                        </div>
+                        <!-- Slide 3 -->
+                        <div class="slide d-flex align-items-center h-100">
+                            <div class="p-5 text-white" style="z-index:2;">
+                                <div class="mb-2">
+                                    <i class="fab fa-playstation fa-lg fs-1"></i>
+                                    <span class="ms-2" style="font-size:2rem;">Gaming</span>
+                                </div>
+                                <h2 class="fw-bold" style="font-size:2.7rem;">PS5 & Xbox<br>Bundle Deals</h2>
+                                <a href="/Product/Index" class="text-white text-decoration-none mt-4 banner-link">
+                                    Shop Now <i class="fa fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                            <img src="~/images/ps5-slim-goedkope-playstation_large 1.png" alt="PS5" class="banner-img ms-auto d-none d-md-block" style="height:90%; max-width:50%; object-fit:contain; z-index:1;">
+                        </div>
+                        <!-- Carousel Dots -->
+                        <div class="slider-dots position-absolute" style="bottom:24px; left:50%; transform:translateX(-50%); z-index:3;">
+                            <span class="dot active"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@{
+    var sliderProducts = ViewBag.SliderProducts as List<E_Commerce.Services.Model_View.ProductVM> ?? new List<E_Commerce.Services.Model_View.ProductVM>();
+}
+<!-- Best Sales Section (First Section) -->
+<section class="flash-sales-section py-5">
+    <div class="container">
+        <div class="d-flex align-items-center mb-2">
+            <span style="display:inline-block;width:24px;height:50px;background:#e94560;border-radius:6px;margin-right:8px;"></span>
+            <span class="fw-bold text-danger" style="font-size:1.07rem;">Today's</span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap">
+            <h2 class="fw-bold mb-0" style="font-size:2.2rem;">Best Sales</h2>
+            <div>
+                <button class="cat-arrow me-2" style="border:none;background:#f5f5f5;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;">
+                    <i class="fa fa-arrow-left"></i>
+                </button>
+                <button class="cat-arrow" style="border:none;background:#f5f5f5;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;">
+                    <i class="fa fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="flash-cards-row d-flex flex-nowrap overflow-auto gap-4 mb-4" id="flashCardsRow">
+            @foreach (var product in sliderProducts)
+            {
+                <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm" style="width: 240px;">
+                    @if (product.Discount.HasValue && product.Discount.Value > 0)
+                    {
+                        <span class="flash-discount">-@product.Discount.Value.ToString("0.##")%</span>
+                    }
+                    <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
+                        @if (canAddToCart)
+                        {
+                            <button class="icon-btn wishlist-btn" data-product-id="@product.Id"><i class="fa-regular fa-heart"></i></button>
+                        }
+                        <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="icon-btn" title="View Details"><i class="fa-regular fa-eye"></i></a>
+                    </div>
+                    <div class="product-image-container mb-3">
+                        <img src="@product.PictureUrl" alt="@product.Name" class="img-fluid">
+                        @if (canAddToCart)
+                        {
+                            <div class="add-to-cart-overlay">
+                                <button type="button" class="btn btn-link text-white p-0" onclick="addToCart(@product.Id, '@product.Name', @product.Price, '@product.PictureUrl')">
+                                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    <div class="fw-bold mb-1">@product.Name</div>
+                    <div class="mb-1">
+                        <span class="text-danger fw-bold">$@product.Price</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="text-muted ms-1" style="font-size:0.95rem;">(@product.StockQuantity)</span>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-4">
+            <a href="/Product/Index" class="btn btn-danger btn-lg px-5" style="background:#e94560;border:none;">View All Products</a>
+        </div>
+        <hr />
+    </div>
+</section>
+
+<section class="category-section py-5">
+    <div class="container">
+        <div class="d-flex align-items-center mb-2">
+            <span style="display:inline-block;width:24px;height:50px;background:#e94560;border-radius:6px;margin-right:8px;"></span>
+            <span class="fw-bold text-danger" style="font-size:1.07rem;">Categories</span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap">
+            <h2 class="fw-bold mb-0" style="font-size:2.2rem;">Browse By Category</h2>
+            <div>
+                <button class="cat-arrow me-2" id="catLeftArrow" style="border:none;background:#f5f5f5;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;">
+                    <i class="fa fa-arrow-left"></i>
+                </button>
+                <button class="cat-arrow" id="catRightArrow" style="border:none;background:#f5f5f5;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;">
+                    <i class="fa fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="flash-cards-row d-flex flex-nowrap overflow-auto gap-4 mb-4" id="categoryCardsRow">
+            @foreach (var type in ViewBag.Types)
+            {
+                <div class="category-card2" data-url="@Url.Action("ByType", "Product", new { typeId = type.Id })">
+                    <div class="cat-icon">
+                        @if (type.Name.ToLower().Contains("phone"))
+                        {
+                            <i class="fa fa-mobile-alt"></i>
+                        }
+                        else if (type.Name.ToLower().Contains("computer") || type.Name.ToLower().Contains("laptop"))
+                        {
+                            <i class="fa fa-desktop"></i>
+                        }
+                        else if (type.Name.ToLower().Contains("watch"))
+                        {
+                            <i class="fa fa-clock"></i>
+                        }
+                        else if (type.Name.ToLower().Contains("camera"))
+                        {
+                            <i class="fa fa-camera"></i>
+                        }
+                        else if (type.Name.ToLower().Contains("headphone"))
+                        {
+                            <i class="fa fa-headphones"></i>
+                        }
+                        else if (type.Name.ToLower().Contains("game"))
+                        {
+                            <i class="fa fa-gamepad"></i>
+                        }
+                        else if (type.Name.ToLower().Contains("printer"))
+                        {
+                            <i class="fa fa-print"></i>
+                        }
+                        else if (type.Name.ToLower().Contains("pc"))
+                        {
+                            <i class="fa fa-desktop"></i>
+                        }
+                        else if (type.Name.ToLower().Contains("television"))
+                        {
+                            <i class="fa fa-tv"></i>
+                        }
+                        else if (type.Name.ToLower().Contains("accessor"))
+                        {
+                            <i class="fa fa-plug"></i>
+                        }
+                        else
+                        {
+                            <i class="fa fa-box"></i>
+                        }
+                    </div>
+                    <div class="cat-label">@type.Name</div>
+                </div>
+            }
+        </div>
+        <hr />
+    </div>
+</section>
+
+@{
+    var bestDiscountProducts = ViewBag.BestDiscountProducts as List<E_Commerce.Services.Model_View.ProductVM> ?? new List<E_Commerce.Services.Model_View.ProductVM>();
+    var newestProducts = ViewBag.NewestProducts as List<E_Commerce.Services.Model_View.ProductVM> ?? new List<E_Commerce.Services.Model_View.ProductVM>();
+}
+<!-- Fourth Section: Explore Products (Newest) -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex align-items-center mb-4">
+            <span style="display:inline-block;width:24px;height:50px;background:#e94560;border-radius:6px;margin-right:8px;"></span>
+            <h2 class="fw-bold mb-0" style="font-size:2.2rem;">Explore Newest Products</h2>
+        </div>
+        <div class="row g-4">
+            @foreach (var product in newestProducts)
+            {
+                <div class="col-md-3 col-sm-6 col-12">
+                    <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm h-100">
+                        @{
+                            var isNew = (DateTime.UtcNow - product.CreatedAt).TotalHours <= 48;
+                            var hasDiscount = product.Discount.HasValue && product.Discount.Value > 0;
+                        }
+                        @if (hasDiscount)
+                        {
+                            <span class="flash-discount" style="position:absolute;top:12px;left:12px;z-index:2;background:#e94560;color:#fff;">-@product.Discount.Value.ToString("0.##")%</span>
+                        }
+                        else if (isNew)
+                        {
+                            <span class="flash-discount" style="position:absolute;top:12px;left:12px;z-index:2;background:#27ae60;color:#fff;">NEW</span>
+                        }
+                        <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
+                            @if (canAddToCart)
+                            {
+                                <button class="icon-btn wishlist-btn" data-product-id="@product.Id"><i class="fa-regular fa-heart"></i></button>
+                            }
+                            <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="icon-btn" title="View Details"><i class="fa-regular fa-eye"></i></a>
+                        </div>
+                        <div class="product-image-container mb-3">
+                            <img src="@product.PictureUrl" alt="@product.Name" class="img-fluid">
+                            @if (canAddToCart)
+                            {
+                                <div class="add-to-cart-overlay">
+                                    <button type="button" class="btn btn-link text-white p-0" onclick="addToCart(@product.Id, '@product.Name', @product.Price, '@product.PictureUrl')">
+                                        <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                        <div class="fw-bold mb-1">@product.Name</div>
+                        <div class="mb-1">
+                            <span class="text-danger fw-bold">$@product.Price</span>
+                        </div>
+                        <div class="mb-1">
+                            <span class="text-muted ms-1" style="font-size:0.95rem;">(@product.StockQuantity)</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Services -->
+<section class="py-5 services" style="background:#fff;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center service-card p-4">
+                    <div class="bg-dark p-3 rounded-circle d-inline-flex align-items-center justify-content-center mb-3 service-icon" style="width: 56px; height: 56px;">
+                        <i class="bi bi-wallet text-white fs-4"></i>
+                    </div>
+                    <h3 class="h5 fw-bold mb-2 service-title">FREE AND FAST DELIVERY</h3>
+                    <p class="text-secondary">Free delivery for all orders over $140</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center service-card p-4">
+                    <div class="bg-dark p-3 rounded-circle d-inline-flex align-items-center justify-content-center mb-3 service-icon" style="width: 56px; height: 56px;">
+                        <i class="bi bi-headset text-white fs-4"></i>
+                    </div>
+                    <h3 class="h5 fw-bold mb-2 service-title">24/7 CUSTOMER SERVICE</h3>
+                    <p class="text-secondary">Friendly 24/7 customer support</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center service-card p-4">
+                    <div class="bg-dark p-3 rounded-circle d-inline-flex align-items-center justify-content-center mb-3 service-icon" style="width: 56px; height: 56px;">
+                        <i class="bi bi-shop text-white fs-4"></i>
+                    </div>
+                    <h3 class="h5 fw-bold mb-2 service-title">MONEY BACK GUARANTEE</h3>
+                    <p class="text-secondary">We return money within 30 days</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        @@media (max-width: 991px) {
+            .banner-section img {
+                display: none;
+            }
+
+            .banner-section {
+                min-height: 220px !important;
+            }
+        }
+
+        @@keyframes slideDown {
+            from {
+                top: -70px;
+            }
+
+            to {
+                top: 0;
+            }
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@media (max-width: 767px) {
+            .category-card2 {
+                width: 120px;
+                height: 110px;
+                font-size: 1rem;
+            }
+        }
+
+        @@media (max-width: 991px) {
+            .flash-cards-row {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+
+            .flash-card {
+                min-width: 200px;
+                max-width: 220px;
+            }
+        }
+
+        /* Services Section */
+        .service-card {
+            border-radius: 1rem;
+            box-shadow: 0 2px 12px rgba(233,69,96,0.08);
+            border: none;
+            transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+            background: #f8f9fa;
+        }
+
+            .service-card:hover {
+                background: #e94560;
+                color: #fff;
+                box-shadow: 0 8px 32px rgba(233,69,96,0.18);
+            }
+
+                .service-card:hover .service-title,
+                .service-card:hover p {
+                    color: #fff !important;
+                }
+
+        .service-icon {
+            background: #e94560 !important;
+            color: #fff !important;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .service-card:hover .service-icon {
+            background: #fff !important;
+            color: #111 !important;
+            border: 2px solid #e94560;
+        }
+
+            .service-card:hover .service-icon i {
+                color: #111 !important;
+            }
+
+        .service-title {
+            color: #e94560;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        /* Slider Styles */
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: none;
+        }
+
+            .slide.active {
+                opacity: 1;
+                display: flex;
+            }
+
+        .slider-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+            .dot.active {
+                background: #fff;
+            }
+
+        .banner-link {
+            display: inline-block;
+            padding: 8px 0;
+            color: #fff !important;
+            text-decoration: none;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+            .banner-link::after {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 2px;
+                bottom: 0;
+                left: 0;
+                background-color: #e94560;
+                transform: scaleX(0);
+                transform-origin: right;
+                transition: transform 0.3s ease;
+            }
+
+            .banner-link:hover {
+                color: #e94560 !important;
+            }
+
+        .category-card2 {
+            width: 120px;
+            min-width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #fff 70%, #ffe5ec 100%);
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(233,69,96,0.08);
+            border: 1.5px solid #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 0;
+            transition: box-shadow 0.2s, background 0.2s, color 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .category-card2 .cat-icon {
+                font-size: 2.2rem;
+                color: #e94560;
+                margin-bottom: 0.5rem;
+                transition: color 0.2s;
+            }
+
+            .category-card2 .cat-label {
+                font-weight: 600;
+                color: #e94560;
+                font-size: 1.05rem;
+                letter-spacing: 0.01em;
+                text-align: center;
+                transition: color 0.2s;
+            }
+
+            .category-card2:hover, .category-card2:focus {
+                background: linear-gradient(135deg, #e94560 80%, #ffb6c1 100%);
+                box-shadow: 0 8px 32px rgba(233,69,96,0.18), 0 2px 8px rgba(0,0,0,0.04);
+                transform: translateY(-4px) scale(1.07);
+                border-color: #e94560;
+            }
+
+                .category-card2:hover .cat-icon,
+                .category-card2:hover .cat-label {
+                    color: #fff !important;
+                }
+
+        #categoryCardsRow {
+            overflow-x: auto;
+            flex-wrap: nowrap !important;
+            gap: 16px;
+        }
+
+        a {
+            text-decoration: none !important;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+}
+
+@section Scripts {
+    <script>
+        // Simple JS slider
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.slider-dots .dot');
+        let currentSlide = 0;
+
+        function showSlide(idx) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === idx);
+                dots[i].classList.toggle('active', i === idx);
+            });
+            currentSlide = idx;
+        }
+
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => showSlide(i));
+        });
+
+        // Auto-slide every 5 seconds
+        setInterval(() => {
+            let next = (currentSlide + 1) % slides.length;
+            showSlide(next);
+        }, 5000);
+
+        // Initialize
+        showSlide(0);
+
+        // Flash cards scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashCardsRow = document.getElementById('flashCardsRow');
+            const leftArrow = document.querySelector('.cat-arrow.me-2');
+            const rightArrow = document.querySelector('.cat-arrow:not(.me-2)');
+
+            leftArrow.addEventListener('click', function() {
+                flashCardsRow.scrollTo({
+                    left: flashCardsRow.scrollLeft - 240,
+                    behavior: 'smooth'
+                });
+            });
+
+            rightArrow.addEventListener('click', function() {
+                flashCardsRow.scrollTo({
+                    left: flashCardsRow.scrollLeft + 240,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        function showLoginToast() {
+            showToast('Please log in first.');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryCardsRow = document.getElementById('categoryCardsRow');
+            const catLeftArrow = document.getElementById('catLeftArrow');
+            const catRightArrow = document.getElementById('catRightArrow');
+            catLeftArrow.addEventListener('click', function() {
+                categoryCardsRow.scrollTo({
+                    left: categoryCardsRow.scrollLeft - 200,
+                    behavior: 'smooth'
+                });
+            });
+            catRightArrow.addEventListener('click', function() {
+                categoryCardsRow.scrollTo({
+                    left: categoryCardsRow.scrollLeft + 200,
+                    behavior: 'smooth'
+                });
+            });
+            // Make category cards clickable
+            document.querySelectorAll('.category-card2').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    const url = card.getAttribute('data-url');
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>
+}

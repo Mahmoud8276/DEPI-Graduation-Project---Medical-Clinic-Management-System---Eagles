@@ -1,0 +1,396 @@
+﻿@model E_Commerce.Services.Model_View.ProductVM
+
+@{
+    ViewData["Title"] = $"{Model.Name} - Product Details";
+    var isLoggedIn = Context.Session.GetString("IsLoggedIn") == "true";
+    var isAdmin = Context.Session.GetString("IsAdmin") == "true";
+    var isNew = (DateTime.UtcNow - Model.CreatedAt).TotalHours <= 48;
+    var hasDiscount = Model.Discount.HasValue && Model.Discount.Value > 0;
+}
+
+@Html.AntiForgeryToken()
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-1">
+        <ol class="breadcrumb bg-white px-0" style="font-size:1.3rem;">
+            <li class="breadcrumb-item">
+                <a href="/" style="color:#888; text-decoration:none; font-weight:300;">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Product")" style="color:#888; text-decoration:none; font-weight:300;">Products</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" style="color:#111; font-weight:400;">@Model.Name</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <div class="product-images">
+                    <div class="main-image mb-3">
+                        <img src="@Model.PictureUrl" alt="@Model.Name" class="img-fluid rounded-3" style="width:100%; height:400px; object-fit:contain; background:#f5f5f5;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-md-6">
+                <div class="product-info">
+                    <h1 class="fw-bold mb-3 d-flex align-items-center" style="font-size:2.2rem;">
+                        @Model.Name
+                        @if (hasDiscount)
+                        {
+                            <span class="flash-discount ms-3" style="background:#e94560;color:#fff;padding:4px 12px;border-radius:8px;font-size:1rem;">-@Model.Discount.Value.ToString("0.##")%</span>
+                        }
+                        else if (isNew)
+                        {
+                            <span class="flash-discount ms-3" style="background:#27ae60;color:#fff;padding:4px 12px;border-radius:8px;font-size:1rem;">NEW</span>
+                        }
+                    </h1>
+                    <div class="mb-4">
+                        <span class="text-danger fw-bold" style="font-size:1.5rem;">$@Model.Price</span>
+                    </div>
+                    <p class="mb-4" style="font-size:1.1rem; color:#666; line-height:1.6;">
+                        @(Model.Description ?? "No description available.")
+                    </p>
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="quantity-selector d-flex align-items-center" style="border:1px solid #eee; border-radius:8px; padding:8px 16px;">
+                            <button class="btn btn-link p-0" style="color:#111;" onclick="decreaseQuantity()"><i class="fa fa-minus"></i></button>
+                            <input type="number" id="quantity" value="1" min="1" max="@Model.StockQuantity" class="form-control border-0 text-center" style="width:60px;">
+                            <button class="btn btn-link p-0" style="color:#111;" onclick="increaseQuantity()"><i class="fa fa-plus"></i></button>
+                        </div>
+                        @if (Model.StockQuantity > 0)
+                        {
+                            <button class="btn btn-danger px-4 py-2" style="background:#e94560; border:none;" onclick="@(!isLoggedIn ? "showLoginToast()" : $"addToCart({Model.Id}, '{Model.Name}', {Model.Price}, '{Model.PictureUrl}')")">
+                                <i class="fa-solid fa-cart-shopping me-2"></i>Add to Cart
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary px-4 py-2" disabled>
+                                <i class="fa-solid fa-cart-shopping me-2"></i>Out of Stock
+                            </button>
+                        }
+                        <button class="btn btn-outline-danger px-4 py-2" style="border:1px solid #e94560; color:#e94560;" onclick="@(!isLoggedIn ? "showLoginToast()" : $"addToWishlist({Model.Id}, '{Model.Name}', {Model.Price}, '{Model.PictureUrl}')")">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-meta">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="text-muted" style="width:120px;">Availability:</span>
+                            @if (Model.StockQuantity > 0)
+                            {
+                                <span class="text-success">In Stock (@Model.StockQuantity units)</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Out of Stock</span>
+                            }
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="text-muted" style="width:120px;">Category:</span>
+                            <span>@string.Join(", ", Model.TypeNames)</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        @if (isAdmin)
+                        {
+                            <a href="@Url.Action("Edit", "Product", new { id = Model.Id })" class="btn btn-outline-primary me-2">
+                                <i class="fa fa-edit me-1"></i>Edit Product
+                            </a>
+                        }
+                        <a href="@Url.Action("Index", "Product")" class="btn btn-secondary">
+                            <i class="fa fa-arrow-left me-1"></i>Back to Products
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="d-flex align-items-center mb-4">
+            <span style="display:inline-block;width:24px;height:50px;background:#e94560;border-radius:6px;margin-right:8px;"></span>
+            <h3 class="fw-bold mb-0" style="font-size:2rem;">Related Products</h3>
+        </div>
+
+        @{
+            var relatedProducts = ViewBag.RelatedProducts as List<E_Commerce.Services.Model_View.ProductVM> ?? new List<E_Commerce.Services.Model_View.ProductVM>();
+        }
+
+        @if (relatedProducts.Any())
+        {
+            <div class="row g-4">
+                @foreach (var product in relatedProducts.Take(4))
+                {
+                    <div class="col-md-3">
+                        <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
+                            <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
+                                <button class="icon-btn" onclick="@(!isLoggedIn ? "showLoginToast()" : $"addToWishlist({product.Id}, '{product.Name}', {product.Price}, '{product.PictureUrl}')")">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                                <a href="@Url.Action("Details", "Product", new { id = product.Id })" class="icon-btn">
+                                    <i class="fa-regular fa-eye"></i>
+                                </a>
+                            </div>
+                            <div class="product-image-container mb-3">
+                                <img src="@product.PictureUrl" alt="@product.Name" class="img-fluid">
+                                <div class="add-to-cart-overlay" onclick="@(!isLoggedIn ? "showLoginToast()" : $"addToCart({product.Id}, '{product.Name}', {product.Price}, '{product.PictureUrl}')")">
+                                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                                </div>
+                            </div>
+                            <div class="fw-bold mb-1">@product.Name</div>
+                            <div class="mb-1">
+                                <span class="text-danger fw-bold">$@product.Price</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <div class="mb-3">
+                    <i class="fa fa-box-open" style="font-size: 4rem; color: #ccc;"></i>
+                </div>
+                <h4 class="text-muted">No related products available</h4>
+                <p class="text-muted">There are no other products in the same category.</p>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function showLoginToast() {
+            showToast('Please log in first.');
+        }
+
+        function decreaseQuantity() {
+            var input = document.getElementById('quantity');
+            var value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
+
+        function increaseQuantity() {
+            var input = document.getElementById('quantity');
+            var value = parseInt(input.value);
+            var max = parseInt(input.getAttribute('max'));
+            if (value < max) {
+                input.value = value + 1;
+            }
+        }
+
+        function addToCart(productId, productName, price, imageUrl) {
+            var quantity = parseInt(document.getElementById('quantity').value);
+
+            // Get the anti-forgery token
+            var token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+            fetch('/Cart/AddToCart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({
+                    Id: productId,
+                    Name: productName,
+                    Price: price,
+                    ImageUrl: imageUrl,
+                    Quantity: quantity
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message);
+                } else {
+                    showToast(data.message || 'Error adding to cart');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error adding to cart. Please try again.');
+            });
+        }
+
+        function addToWishlist(productId, productName, price, imageUrl) {
+            var formData = new FormData();
+            formData.append('Id', productId);
+            formData.append('Name', productName);
+            formData.append('Price', price);
+            formData.append('ImageUrl', imageUrl);
+            formData.append('Quantity', 1);
+
+            fetch('/Wishlist/AddToWishlist', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message);
+                } else {
+                    showToast('Error adding to wishlist');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error adding to wishlist');
+            });
+        }
+
+        function showToast(message) {
+            // Create toast element
+            var toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #e94560;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 9999;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+
+            document.body.appendChild(toast);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 3000);
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .quantity-selector input {
+            width: 50px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+            .quantity-selector input::-webkit-inner-spin-button,
+            .quantity-selector input::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            .quantity-selector input[type=number] {
+                -moz-appearance: textfield;
+            }
+
+        .flash-card {
+            min-width: 220px;
+            max-width: 240px;
+            border: none;
+            transition: box-shadow 0.2s, transform 0.2s;
+            position: relative;
+        }
+
+            .flash-card:hover {
+                box-shadow: 0 4px 24px rgba(233,69,96,0.10);
+                transform: translateY(-4px) scale(1.03);
+            }
+
+        .flash-card-icons {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .icon-btn {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #222;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+            text-decoration: none;
+        }
+
+            .icon-btn:hover {
+                background: #e94560;
+                color: #fff;
+                border: 1px solid #e94560;
+            }
+
+        .product-image-container {
+            position: relative;
+            height: 140px;
+            background: #f5f5f5;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .product-image-container img {
+                max-height: 120px;
+                width: auto;
+                object-fit: contain;
+                background: transparent;
+                mix-blend-mode: multiply;
+            }
+
+        .add-to-cart-overlay {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 8px 0;
+            text-align: center;
+            transition: bottom 0.3s ease;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .flash-card:hover .add-to-cart-overlay {
+            bottom: 0;
+        }
+
+        .flash-card .add-to-cart-overlay:hover {
+            background: rgba(233,69,96,0.9);
+        }
+
+        .flash-card .add-to-cart-overlay i {
+            margin-right: 8px;
+        }
+    </style>
+}

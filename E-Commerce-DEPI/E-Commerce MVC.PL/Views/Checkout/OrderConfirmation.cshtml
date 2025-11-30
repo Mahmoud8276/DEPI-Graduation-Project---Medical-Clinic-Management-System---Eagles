@@ -1,0 +1,71 @@
+﻿@model E_Commerce.Data.DataOrEntity.Order
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5 text-center">
+                        <div class="mb-4">
+                            <i class="fa fa-check-circle text-success" style="font-size: 4rem;"></i>
+                        </div>
+                        <h2 class="fw-bold mb-3">Order Confirmed!</h2>
+                        <p class="text-muted mb-4">Thank you for your order. We'll process it shortly.</p>
+
+                        <div class="alert alert-success">
+                            <strong>Order #@Model.Id</strong> has been placed successfully!
+                        </div>
+
+                        <div class="row text-start">
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Order Details</h5>
+                                <p><strong>Order ID:</strong> #@Model.Id</p>
+                                <p><strong>Date:</strong> @Model.CreationDate.ToString("MMM dd, yyyy")</p>
+                                <p><strong>Status:</strong> <span class="badge bg-warning">@Model.Status</span></p>
+                                <p><strong>Payment Method:</strong> @Model.PaymentMethod</p>
+                                <p><strong>Total Amount:</strong> $@Model.TotalAmount</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Shipping Address</h5>
+                                <p>@Model.FirstName @Model.LastName</p>
+                                <p>@Model.StreetAddress</p>
+                                <p>@Model.City</p>
+                                <p>Phone: @Model.Phone</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h5 class="mb-3">Order Items</h5>
+                            @foreach (var item in Model.OrderItems)
+                            {
+                                <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                                    <div class="d-flex align-items-center">
+                                        <img src="@item.ImageUrl" alt="@item.ProductName" class="img-fluid rounded me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                        <div>
+                                            <p class="mb-0 fw-medium">@item.ProductName</p>
+                                            <small class="text-muted">Quantity: @item.Quantity</small>
+                                        </div>
+                                    </div>
+                                    <div class="fw-bold">$@(item.Price * item.Quantity)</div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-primary me-2">
+                                <i class="fa fa-home me-1"></i>Continue Shopping
+                            </a>
+                            <a href="@Url.Action("MyOrders", "Profile")" class="btn btn-outline-secondary">
+                                <i class="fa fa-list me-1"></i>View My Orders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

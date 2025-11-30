@@ -1,0 +1,95 @@
+﻿@model List<E_Commerce.Data.DataOrEntity.Order>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 fw-bold">My Orders</h1>
+            <a href="@Url.Action("Index", "Profile")" class="btn btn-outline-secondary">
+                <i class="fa fa-arrow-left me-1"></i>Back to Profile
+            </a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <div class="mb-3">
+                    <i class="fa fa-shopping-bag" style="font-size: 4rem; color: #ccc;"></i>
+                </div>
+                <h4 class="text-muted">No orders yet</h4>
+                <p class="text-muted">You haven't placed any orders yet.</p>
+                <a href="@Url.Action("Index", "Product")" class="btn btn-primary">
+                    <i class="fa fa-shopping-cart me-1"></i>Start Shopping
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var order in Model)
+                {
+                    <div class="col-12 mb-4">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 py-3">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <h6 class="mb-0 fw-bold">Order #@order.Id</h6>
+                                        <small class="text-muted">@order.CreationDate.ToString("MMM dd, yyyy 'at' h:mm tt")</small>
+                                    </div>
+                                    <div class="col-md-6 text-md-end">
+                                        <span class="badge @(order.Status == "Accepted" ? "bg-success" : order.Status == "Declined" ? "bg-danger" : "bg-warning")">
+                                            @order.Status
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="mb-3">Order Items</h6>
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <div class="d-flex align-items-center mb-2">
+                                                <img src="@item.ImageUrl" alt="@item.ProductName" class="img-fluid rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">@item.ProductName</p>
+                                                    <small class="text-muted">Quantity: @item.Quantity</small>
+                                                </div>
+                                                <div class="fw-bold">$@(item.Price * item.Quantity)</div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h6 class="mb-3">Order Summary</h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Payment Method:</span>
+                                            <span>@order.PaymentMethod</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Shipping Address:</span>
+                                        </div>
+                                        <div class="small text-muted mb-3">
+                                            @order.FirstName @order.LastName<br>
+                                            @order.StreetAddress<br>
+                                            @order.City<br>
+                                            Phone: @order.Phone
+                                        </div>
+                                        <div class="border-top pt-2">
+                                            <div class="d-flex justify-content-between fw-bold">
+                                                <span>Total:</span>
+                                                <span>$@order.TotalAmount</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

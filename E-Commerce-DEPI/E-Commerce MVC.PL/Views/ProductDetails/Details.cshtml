@@ -1,0 +1,352 @@
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-1">
+        <ol class="breadcrumb bg-white px-0" style="font-size:1.3rem;">
+            <li class="breadcrumb-item">
+                <a href="/" style="color:#888; text-decoration:none; font-weight:300;">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="/Products" style="color:#888; text-decoration:none; font-weight:300;">Products</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" style="color:#111; font-weight:400;">Product Details</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <div class="product-images">
+                    <div class="main-image mb-3">
+                        <img src="~/images/mainDetails.jpg" alt="Product" class="img-fluid rounded-3" style="width:100%; height:400px; object-fit:contain; background:#f5f5f5;">
+                    </div>
+                    <div class="thumbnail-images d-flex gap-3">
+                        <img src="~/images/WhatsApp Image 2025-05-12 at 21.24.29_05e519da.jpg" alt="Thumbnail 1" class="img-fluid rounded-3" style="width:80px; height:80px; object-fit:contain; background:#f5f5f5; cursor:pointer;">
+                        <img src="~/images/WhatsApp Image 2025-05-12 at 21.24.29_6e8053ab.jpg" alt="Thumbnail 2" class="img-fluid rounded-3" style="width:80px; height:80px; object-fit:contain; background:#f5f5f5; cursor:pointer;">
+                        <img src="~/images/WhatsApp Image 2025-05-12 at 21.24.29_863c942b.jpg" alt="Thumbnail 3" class="img-fluid rounded-3" style="width:80px; height:80px; object-fit:contain; background:#f5f5f5; cursor:pointer;">
+                        <img src="~/images/WhatsApp Image 2025-05-12 at 21.24.29_c29e69d1.jpg" alt="Thumbnail 4" class="img-fluid rounded-3" style="width:80px; height:80px; object-fit:contain; background:#f5f5f5; cursor:pointer;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-md-6">
+                <div class="product-info">
+                    <h1 class="fw-bold mb-3" style="font-size:2.2rem;">iPhone 14 Pro Max</h1>
+                    <div class="mb-3">
+                        <span class="text-warning">
+                            <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i>
+                        </span>
+                        <span class="text-muted ms-2" style="font-size:1.1rem;">(120 reviews)</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-danger fw-bold" style="font-size:1.5rem;">$999</span>
+                        <span class="text-muted text-decoration-line-through ms-2" style="font-size:1.2rem;">$1299</span>
+                    </div>
+                    <p class="mb-4" style="font-size:1.1rem; color:#666; line-height:1.6;">
+                        Experience the future of mobile technology with the iPhone 14 Pro Max. Featuring a stunning 6.7-inch Super Retina XDR display, powerful A16 Bionic chip, and revolutionary camera system.
+                    </p>
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="quantity-selector d-flex align-items-center" style="border:1px solid #eee; border-radius:8px; padding:8px 16px;">
+                            <button class="btn btn-link p-0" style="color:#111;"><i class="fa fa-minus"></i></button>
+                            <input type="number" value="1" min="1" class="form-control border-0 text-center" style="width:60px;">
+                            <button class="btn btn-link p-0" style="color:#111;"><i class="fa fa-plus"></i></button>
+                        </div>
+                        <button class="btn btn-danger px-4 py-2" style="background:#e94560; border:none;">
+                            <i class="fa-solid fa-cart-shopping me-2"></i>Add to Cart
+                        </button>
+                        <button class="btn btn-outline-danger px-4 py-2" style="border:1px solid #e94560; color:#e94560;">
+                            <i class="fa-regular fa-heart me-2"></i>Add to Wishlist
+                        </button>
+                    </div>
+                    <div class="product-meta">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="text-muted" style="width:120px;">Availability:</span>
+                            <span class="text-success">In Stock</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="text-muted" style="width:120px;">Category:</span>
+                            <span>Phones</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="text-muted" style="width:120px;">Share:</span>
+                            <div class="d-flex gap-3">
+                                <a href="#" class="text-muted"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="text-muted"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="text-muted"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="text-muted"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products Section -->
+        <div class="mt-5">
+            <div class="d-flex align-items-center mb-4">
+                <span style="display:inline-block;width:24px;height:50px;background:#e94560;border-radius:6px;margin-right:8px;"></span>
+                <h3 class="fw-bold mb-0" style="font-size:2rem;">Related Products</h3>
+            </div>
+            <div class="row g-4">
+                <!-- Related Product 1 -->
+                <div class="col-md-3">
+                    <a href="/ProductDetails/Details/2" style="text-decoration:none;color:inherit;">
+                        <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
+                            <span class="flash-discount">-30%</span>
+                            <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
+                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                            <div class="product-image-container mb-3">
+                                <img src="~/images/samsung.jpg" alt="Samsung" class="img-fluid">
+                                <div class="add-to-cart-overlay">
+                                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                                </div>
+                            </div>
+                            <div class="fw-bold mb-1">Samsung Galaxy S23 Ultra</div>
+                            <div class="mb-1">
+                                <span class="text-danger fw-bold">$999</span>
+                                <span class="text-muted text-decoration-line-through ms-2">$1199</span>
+                            </div>
+                            <div class="mb-1">
+                                <span class="text-warning">
+                                    <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i>
+                                </span>
+                                <span class="text-muted ms-1" style="font-size:0.95rem;">(98)</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <!-- Related Product 2 -->
+                <div class="col-md-3">
+                    <a href="/ProductDetails/Details/3" style="text-decoration:none;color:inherit;">
+                        <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
+                            <span class="flash-discount">-20%</span>
+                            <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
+                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                            <div class="product-image-container mb-3">
+                                <img src="~/images/airpods.jpg" alt="AirPods" class="img-fluid">
+                                <div class="add-to-cart-overlay">
+                                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                                </div>
+                            </div>
+                            <div class="fw-bold mb-1">AirPods Max</div>
+                            <div class="mb-1">
+                                <span class="text-danger fw-bold">$449</span>
+                                <span class="text-muted text-decoration-line-through ms-2">$549</span>
+                            </div>
+                            <div class="mb-1">
+                                <span class="text-warning">
+                                    <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                                </span>
+                                <span class="text-muted ms-1" style="font-size:0.95rem;">(112)</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <!-- Related Product 3 -->
+                <div class="col-md-3">
+                    <a href="/ProductDetails/Details/4" style="text-decoration:none;color:inherit;">
+                        <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
+                            <span class="flash-discount">-35%</span>
+                            <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
+                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                            <div class="product-image-container mb-3">
+                                <img src="~/images/ipad.jpg" alt="iPad" class="img-fluid">
+                                <div class="add-to-cart-overlay">
+                                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                                </div>
+                            </div>
+                            <div class="fw-bold mb-1">iPad Air 5th Gen</div>
+                            <div class="mb-1">
+                                <span class="text-danger fw-bold">$599</span>
+                                <span class="text-muted text-decoration-line-through ms-2">$799</span>
+                            </div>
+                            <div class="mb-1">
+                                <span class="text-warning">
+                                    <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i>
+                                </span>
+                                <span class="text-muted ms-1" style="font-size:0.95rem;">(87)</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <!-- Related Product 4 -->
+                <div class="col-md-3">
+                    <a href="/ProductDetails/Details/5" style="text-decoration:none;color:inherit;">
+                        <div class="flash-card bg-white p-3 rounded-3 position-relative shadow-sm">
+                            <span class="flash-discount">-25%</span>
+                            <div class="flash-card-icons d-flex flex-column align-items-end position-absolute" style="top: 16px; right: 16px; gap: 8px;">
+                                <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+                                <button class="icon-btn"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                            <div class="product-image-container mb-3">
+                                <img src="~/images/macbook.jpg" alt="MacBook" class="img-fluid">
+                                <div class="add-to-cart-overlay">
+                                    <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                                </div>
+                            </div>
+                            <div class="fw-bold mb-1">MacBook Air M2</div>
+                            <div class="mb-1">
+                                <span class="text-danger fw-bold">$1299</span>
+                                <span class="text-muted text-decoration-line-through ms-2">$1499</span>
+                            </div>
+                            <div class="mb-1">
+                                <span class="text-warning">
+                                    <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
+                                </span>
+                                <span class="text-muted ms-1" style="font-size:0.95rem;">(145)</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .nav-tabs .nav-link {
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+        }
+
+            .nav-tabs .nav-link.active {
+                color: #e94560 !important;
+                border-bottom: 2px solid #e94560;
+                background: none;
+            }
+
+        .quantity-selector input {
+            width: 50px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+            .quantity-selector input::-webkit-inner-spin-button,
+            .quantity-selector input::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            .quantity-selector input[type=number] {
+                -moz-appearance: textfield;
+            }
+
+        .flash-card {
+            min-width: 220px;
+            max-width: 240px;
+            border: none;
+            transition: box-shadow 0.2s, transform 0.2s;
+            position: relative;
+        }
+
+            .flash-card:hover {
+                box-shadow: 0 4px 24px rgba(233,69,96,0.10);
+                transform: translateY(-4px) scale(1.03);
+            }
+
+        .flash-discount {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #e94560;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 6px;
+            padding: 2px 10px;
+            z-index: 2;
+        }
+
+        .flash-card-icons {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .icon-btn {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #222;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+
+            .icon-btn:hover {
+                background: #e94560;
+                color: #fff;
+                border: 1px solid #e94560;
+            }
+
+        .product-image-container {
+            position: relative;
+            height: 140px;
+            background: #f5f5f5;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .product-image-container img {
+                max-height: 120px;
+                width: auto;
+                object-fit: contain;
+                background: transparent;
+                mix-blend-mode: multiply;
+            }
+
+        .add-to-cart-overlay {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 8px 0;
+            text-align: center;
+            transition: bottom 0.3s ease;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .flash-card:hover .add-to-cart-overlay {
+            bottom: 0;
+        }
+
+        .flash-card .add-to-cart-overlay:hover {
+            background: rgba(233,69,96,0.9);
+        }
+
+        .flash-card .add-to-cart-overlay i {
+            margin-right: 8px;
+        }
+    </style>
+}
